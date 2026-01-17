@@ -30,6 +30,8 @@
 #include "targets/vmu/config.h"
 #elif defined(RG_TARGET_CROKPOCKET)
 #include "targets/crokpocket/config.h"
+#elif defined(RG_TARGET_ESP32S3_XBOX_096INCH)
+#include "targets/esp32s3-xbox-096inch/config.h"
 #else
 #warning "No target defined. Defaulting to ODROID-GO."
 #include "targets/odroid-go/config.h"

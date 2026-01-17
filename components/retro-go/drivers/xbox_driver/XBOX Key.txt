@@ -1,0 +1,63 @@
+        // 获取输入数据指针和长度
+        const uint8_t *data = param->input.data;
+        uint16_t length = param->input.length;
+
+        // Xbox Series 手柄标准输入报告通常为 16 字节
+        if (length < 16) {
+            break;
+        }
+
+        // --- 1. 解析摇杆 (16位数值, 范围 0-65535) ---
+        // 小端序：低字节在前
+        uint16_t joyLX = (data[1] << 8) | data[0]; 
+        uint16_t joyLY = (data[3] << 8) | data[2]; 
+        uint16_t joyRX = (data[5] << 8) | data[4]; 
+        uint16_t joyRY = (data[7] << 8) | data[6];
+
+        // --- 2. 解析扳机 (10位数值, 范围 0-1023) ---
+        uint16_t trigLT = (data[9] << 8) | data[8];
+        uint16_t trigRT = (data[11] << 8) | data[10];
+
+        // --- 3. 解析 D-Pad (方向键) ---
+        // 原始值：0=无, 1=上, 2=右上, 3=右... 8=左上
+        uint8_t dpadRaw = data[12];
+        char *dpadStr = "CENTER";
+        if (dpadRaw == 1) dpadStr = "UP";
+        else if (dpadRaw == 2) dpadStr = "UP-RIGHT";
+        else if (dpadRaw == 3) dpadStr = "RIGHT";
+        else if (dpadRaw == 4) dpadStr = "DOWN-RIGHT";
+        else if (dpadRaw == 5) dpadStr = "DOWN";
+        else if (dpadRaw == 6) dpadStr = "DOWN-LEFT";
+        else if (dpadRaw == 7) dpadStr = "LEFT";
+        else if (dpadRaw == 8) dpadStr = "UP-LEFT";
+
+        // --- 4. 解析按键 ---
+        uint8_t mainBtns = data[13];
+        uint8_t centerBtns = data[14];
+        uint8_t shareBtn = data[15];
+
+        // 为了防止串口刷屏太快，你可以只在按下特定键时打印，
+        // 或者简单粗暴地全部打印（可能会刷屏，但适合测试）
+        
+        printf("LX:%5u LY:%5u | RX:%5u RY:%5u | LT:%4u RT:%4u | DPAD:%s | ", 
+               joyLX, joyLY, joyRX, joyRY, trigLT, trigRT, dpadStr);
+
+        // 打印按下的具体按键
+        if (mainBtns & 0x01) printf("A ");
+        if (mainBtns & 0x02) printf("B ");
+        if (mainBtns & 0x08) printf("X "); // 注意：Xbox映射可能与标准不同，以实测为准
+        if (mainBtns & 0x10) printf("Y ");
+        if (mainBtns & 0x40) printf("LB ");
+        if (mainBtns & 0x80) printf("RB ");
+        
+        if (centerBtns & 0x04) printf("View(Select) ");
+        if (centerBtns & 0x08) printf("Menu(Start) ");
+        if (centerBtns & 0x10) printf("Xbox ");
+        if (centerBtns & 0x20) printf("LS_Click ");
+        if (centerBtns & 0x40) printf("RS_Click ");
+        
+        if (shareBtn & 0x01) printf("Share ");
+
+        printf("\n"); // 换行
+
+        break;

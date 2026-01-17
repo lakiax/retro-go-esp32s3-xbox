@@ -1,6 +1,6 @@
 #include "rg_system.h"
 #include "rg_input.h"
-
+#include "xbox_pad.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -267,6 +267,7 @@ static void input_task(void *arg)
 
 void rg_input_init(void)
 {
+    xbox_pad_init();
     RG_ASSERT(!input_task_running, "Input already initialized!");
 
 #if defined(RG_GAMEPAD_ADC_MAP)
@@ -382,7 +383,14 @@ uint32_t rg_input_read_gamepad(void)
 #ifdef RG_TARGET_SDL2
     SDL_PumpEvents();
 #endif
-    return gamepad_state;
+    // 1. 获取基础按键状态 (板载 GPIO/ADC 等)
+    uint32_t final_state = gamepad_state;
+
+    // 2. [新增] 叠加 Xbox 蓝牙手柄的按键状态
+    // 使用按位或运算，这样两个手柄能同时起作用
+    final_state |= xbox_pad_get_state();
+
+    return final_state;
 }
 
 bool rg_input_key_is_pressed(rg_key_t mask)
