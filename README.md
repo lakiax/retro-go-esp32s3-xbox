@@ -6,7 +6,7 @@ Based on Retro-Go, it integrates the functionality of connecting to the Xbox wir
 
 # Preview
 
-![device.jpg](D:\project\retro-go-esp32s3-xbox\assets\preview.gif)
+![preview.gif](assets\preview.gif)
 
 
 
@@ -18,7 +18,7 @@ VSCode + ESP-IDF v5.1.6
 
 # Usage
 
-1. Download img, bin([Release]([Releases · lakiax/retro-go-esp32s3-xbox · GitHub](https://github.com/lakiax/retro-go-esp32s3-xbox/releases/)))
+1. Download img, bin([Release]([Releases](https://github.com/lakiax/retro-go-esp32s3-xbox/releases/)))
 
 2. Flash firmware
    
