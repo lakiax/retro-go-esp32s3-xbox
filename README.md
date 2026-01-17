@@ -6,7 +6,7 @@ Based on Retro-Go, it integrates the functionality of connecting to the Xbox wir
 
 # Preview
 
-![preview.gif](assets\preview.gif)
+![preview.gif](assets/preview.gif)
 
 
 
