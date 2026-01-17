@@ -18,7 +18,7 @@ VSCode + ESP-IDF v5.1.6
 
 # Usage
 
-1. Download img, bin([Release]([Releases](https://github.com/lakiax/retro-go-esp32s3-xbox/releases/)))
+1. Download img, bin([Releases](https://github.com/lakiax/retro-go-esp32s3-xbox/releases/))
 
 2. Flash firmware
    
