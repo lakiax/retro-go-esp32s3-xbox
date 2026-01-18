@@ -26,7 +26,7 @@ VSCode + ESP-IDF v5.1.6
 
 3. Flash game firmware to internal storage
    
-   `python -m esptool --port COM4 write_flash 0x840000 roms.bin`
+   `python -m esptool --port COM4 write_flash 0x6A0000 roms.bin`
 
 
 
