@@ -5,5 +5,7 @@
 IDF_TARGET = "esp32s3"
 # .fw file format, if supported by the device
 FW_FORMAT = "esplay"
-# Default apps to build when none is specified (comment to build all)
-# DEFAULT_APPS = "launcher prboom-go"
+# Default apps to build when none is specified.
+# NOTE: this file is exec()'d by rg_tool.py AFTER its own DEFAULT_APPS is set,
+# so it overrides that value. Keep both sides in sync: NES-only build.
+DEFAULT_APPS = "launcher retro-core"

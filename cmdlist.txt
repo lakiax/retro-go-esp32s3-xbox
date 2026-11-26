@@ -1,3 +1,5 @@
+重要：ESP-IDF 5.x PowerShell执行
+
 以下命令使用到的COM口和工具链路径根据实际修改：
 Modify the COM port and toolchain paths used in the commands below according to your actual setup:
 
@@ -5,37 +7,34 @@ Modify the COM port and toolchain paths used in the commands below according to 
 Clean build
 python rg_tool.py clean
 
-编译带文件数据分区
-Build image with file data partition
+编译带文件数据分区（NES-only：只打包 launcher + retro-core）
+Build image with file data partition (NES-only: launcher + retro-core only)
 python rg_tool.py --target esp32s3-xbox-096inch --fatsize 4194304 build-img
 
 烧录固件
 Flash firmware
-python -m esptool -p COM4 -b 921600 write_flash 0x0 .\retro-go_44f6d-dirty_esp32s3-xbox-096inch.img
+python -m esptool -b 921600 write_flash 0x0 .\retro-go_44f6d-dirty_esp32s3-xbox-096inch.img
 
 运行监视器
 Run monitor
 python rg_tool.py --target esp32s3-xbox-096inch monitor
 
-打包文件夹为固件（文件夹结构：my_data->roms->nes->...）
+打包文件夹为固件（文件夹结构：my_data->roms->nes->...；--partition_size 必须与 --fatsize 一致）
 Pack folder as firmware (Folder structure: my_data->roms->nes->...)
-python D:\Tool\esp_idf\esp\v5.1.6\esp-idf\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin my_data
+python $env:IDF_PATH\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin my_data
 
 长名
 Long filename support
-python D:\Tool\esp_idf\esp\v5.1.6\esp-idf\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin --long_name_support my_data
+python $env:IDF_PATH\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin --long_name_support my_data
 
-烧录游戏固件到内置存储（烧录到vfs分区）
-Flash game firmware to internal storage (flash to vfs partition)
-python -m esptool --port COM4 write_flash 0x840000 roms.bin
-
-读分区文件
-Read partition file
+先读出本次新镜像的分区表，取得 vfs 分区的 Offset（裁剪 app 数量后偏移会变，不要沿用旧值）
+Read the partition table of the NEW image first and get the Offset of "vfs"
 esptool.py read_flash 0x8000 0xC00 partitions.bin
+python $env:IDF_PATH\components\partition_table\gen_esp32part.py partitions.bin
 
-查看分区文件信息
-View partition file information
-python D:\Tool\esp_idf\esp\v5.1.6\esp-idf\components\partition_table\gen_esp32part.py partitions.bin
+烧录游戏固件到内置存储（把 <VFS_OFFSET> 换成上一步读到的偏移）
+Flash game firmware to internal storage (replace <VFS_OFFSET> with the value above)
+python -m esptool write_flash 0x270000 roms.bin
 
 文件大小对应关系
 File size mapping

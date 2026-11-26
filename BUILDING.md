@@ -42,10 +42,10 @@ Run `python rg_tool.py --help` to see all available flags and commands.
 - Generate a .img to be flashed with esptool.py (Serial):\
     `python rg_tool.py build-img` or `python rg_tool.py release` (clean build)
 
-For a smaller build you can also specify which apps you want, for example the launcher + DOOM only:
-1. `python rg_tool.py build-fw launcher prboom-go`
+For a smaller build you can also specify which apps you want, for example the launcher + NES only:
+1. `python rg_tool.py build-img launcher retro-core`
 
-Note that the app named `retro-core` contains the following emulators: NES, PCE, G&W, Lynx, and SMS/GG/COL. As such, these emulators cannot be selected individually. The reason for the bundling is simply size, together they account for a mere 700KB instead of almost 3MB when they were built separately.
+Upstream `retro-core` bundles NES, SNES, GB/C, PCE, G&W, Lynx and SMS/GG/COL in one app partition. This NES-only fork strips `retro-core` down to `nofrendo` (see `retro-core/CMakeLists.txt`, `retro-core/main/main.c` and the removed `main_*.c` files), so it must be paired with a launcher whose `applications_init()` registers only the "nes" tab.
 
 
 ## Flashing an image for the first time

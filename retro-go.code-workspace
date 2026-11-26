@@ -4,16 +4,7 @@
 			"path": "components"
 		},
 		{
-			"path": "fmsx"
-		},
-		{
-			"path": "gwenesis"
-		},
-		{
 			"path": "launcher"
-		},
-		{
-			"path": "prboom-go"
 		},
 		{
 			"path": "retro-core"
