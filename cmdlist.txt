@@ -1,3 +1,5 @@
+重要：ESP-IDF 5.x PowerShell执行
+
 以下命令使用到的COM口和工具链路径根据实际修改：
 Modify the COM port and toolchain paths used in the commands below according to your actual setup:
 
@@ -19,23 +21,26 @@ python rg_tool.py --target esp32s3-xbox-096inch monitor
 
 打包文件夹为固件（文件夹结构：my_data->roms->nes->...）
 Pack folder as firmware (Folder structure: my_data->roms->nes->...)
-python D:\Tool\esp_idf\esp\v5.1.6\esp-idf\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin my_data
+python $env:IDF_PATH\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin my_data
 
 长名
 Long filename support
-python D:\Tool\esp_idf\esp\v5.1.6\esp-idf\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin --long_name_support my_data
+python $env:IDF_PATH\components\fatfs\wl_fatfsgen.py --partition_size 4194304 --output_file roms.bin --long_name_support my_data
 
 烧录游戏固件到内置存储（烧录到vfs分区）
 Flash game firmware to internal storage (flash to vfs partition)
-python -m esptool --port COM4 write_flash 0x840000 roms.bin
+python -m esptool write_flash 0x6A0000 roms.bin
 
 读分区文件
 Read partition file
 esptool.py read_flash 0x8000 0xC00 partitions.bin
+0x8000:ESP32 系列分区表的默认存放偏移，ESP-IDF 官方文档明确写「在 flash 的默认偏移地址 0x8000 处烧写一张分区表」
+0xC00:读取长度 = 3072 字节（3 KiB）。这正是官方规定的分区表长度，最多容纳 95 条分区条目；每条 32 字节，末尾还有一条 MD5 校验条目，
+启用安全启动时后面还会跟签名，因此整个表实际占一个 0x1000（4 KiB）扇区 
 
 查看分区文件信息
 View partition file information
-python D:\Tool\esp_idf\esp\v5.1.6\esp-idf\components\partition_table\gen_esp32part.py partitions.bin
+python $env:IDF_PATH\components\partition_table\gen_esp32part.py partitions.bin
 
 文件大小对应关系
 File size mapping
