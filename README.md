@@ -14,7 +14,7 @@ This branch is a NES-only build: the full Retro-Go system (launcher UI, settings
 
 # Toolchain
 
-VSCode + ESP-IDF v5.1.6
+ESP-IDF v5.1.6 PowerShell
 
 
 
@@ -24,17 +24,19 @@ VSCode + ESP-IDF v5.1.6
 
 2. Flash firmware
    
-   `python -m esptool -p COM4 -b 921600 write_flash 0x0 .\retro-go_44f6d-dirty_esp32s3-xbox-096inch.img`
+   `python -m esptool write_flash 0x0 .\retro-go_44f6d-dirty_esp32s3-xbox-096inch.img`
 
 3. Flash game firmware to internal storage
    
-   `python -m esptool --port COM4 write_flash <VFS_OFFSET> roms.bin`
+   `python -m esptool write_flash <VFS_OFFSET> roms.bin`
    
    `<VFS_OFFSET>` must be read from the partition table of the image you just built:
    
-   `python -m esptool -p COM4 read_flash 0x8000 0xC00 partitions.bin`
-   
-   `python %IDF_PATH%/components/partition_table/gen_esp32part.py partitions.bin`
+   `python -m esptool read_flash 0x8000 0xC00 partitions.bin`
+ 0x8000:ESP32 系列分区表的默认存放偏移，ESP-IDF 官方文档明确写「在 flash 的默认偏移地址 0x8000 处烧写一张分区表」
+ 0xC00:读取长度 = 3072 字节（3 KiB）。这正是官方规定的分区表长度，最多容纳 95 条分区条目；每条 32 字节，末尾还有一条 MD5 校验条目，启用安全启动时后面还会跟签名，因此整个表实际占一个 0x1000（4 KiB）扇区 
+
+   `python $env:IDF_PATH/components/partition_table/gen_esp32part.py partitions.bin`
    
    The old hard-coded `0x6A0000` / `0x840000` offsets no longer apply: with fewer app partitions the vfs partition moves. Writing roms.bin to a stale offset corrupts an app partition.
 
